@@ -1,7 +1,14 @@
 # Runtime
 iOS Runtime学习整理。
 
+Objective-C具有相当多的动态特性，基本的，也是经常被提到和用到的有动态类型（Dynamic typing），动态绑定（Dynamic binding）和动态加载（Dynamic loading）。
 
+- 一些概念
+
+  - Runtime 简称运行时，就是系统在运行时候的一些机制，其中最主要的是消息机制。
+  - 对于C语言，函数的调用在编译的时候会决定调用哪个函数，编译完成之后直接顺序执行，无任何二义性。
+  - OC的函数调用成为消息发送。属于动态调用过程。在编译的时候并不能决定真正调用哪个函数（事实证明，在编译阶段，OC可以调用任何函数，即使这个函数并未实现，只要申明过就不会报错。而C语言在编译阶段就会报错）。
+  - 只有在真正运行的时候才会根据函数的名称找到对应的函数来调用。
 
 - 常见方法
 
@@ -86,3 +93,4 @@ method_exchangeImplementations(Method m1, Method m2)
 
 [http://southpeak.github.io/categories/objectivec/](http://southpeak.github.io/categories/objectivec/)
 
+https://onevcat.com/2012/04/objective-c-runtime/
