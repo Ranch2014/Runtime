@@ -54,11 +54,19 @@ Objective-C 是动态语言，每个方法在运行时会被动态转为消息�
 
   ```objective-c
   unsigned int count;
-  Ivar *ivarList = class_copyIvarList([UIViewController class], &count);
-  for (int i=0; i<count; i++) {
-  	const char *ivarName = ivar_getName(ivarList[i]);
-  	NSLog(@"Ivar--->%@", [NSString stringWithUTF8String:ivarName]);
-  }
+      Ivar *ivarList = class_copyIvarList([UIViewController class], &count);
+      for (int i=0; i<count; i++) {
+          Ivar ivar = ivarList[i];
+          const char *ivarName = ivar_getName(ivar); //获取变量名
+          const char *ivarType = ivar_getTypeEncoding(ivar); //获取变量编码类型
+          NSLog(@"Ivar--->%s - %s", ivarName, ivarType);
+          
+          NSString *str = [NSString stringWithUTF8String:ivarName];
+          if ([str isEqualToString:@"_title"]) { //若实例变量有_title，则给它赋值
+              object_setIvar(self, ivar, @"hello");
+          }
+      }
+      NSLog(@"_title = %@", self.title);
   ```
 
   - 获取协议列表
@@ -75,8 +83,32 @@ Objective-C 是动态语言，每个方法在运行时会被动态转为消息�
 
 - 方法交换
 
-```c
-method_exchangeImplementations(Method m1, Method m2)
+```objective-c
+method_exchangeImplementations(Method m1, Method m2) //交换两个方法
+
++ (void)load
+{
+    //获取两个方法
+    Method imageNamedMethod = class_getClassMethod(self, @selector(imageNamed:));
+    Method currentImageNamedMethod = class_getClassMethod(self, @selector(currentImageNamed:));
+    
+    //方法交换
+    method_exchangeImplementations(imageNamedMethod, currentImageNamedMethod);
+}
+
++ (UIImage *)currentImageNamed:(NSString *)name
+{
+    //程序执行到这里时，两个方法已经交换过了
+    UIImage *image = [UIImage currentImageNamed:name];
+    
+    if (image) {
+        NSLog(@"加载成功");
+    } else {
+        NSLog(@"加载失败");
+    }
+    
+    return image;
+}
 ```
 
 - 动态关联属性
@@ -103,10 +135,10 @@ method_exchangeImplementations(Method m1, Method m2)
 
 主要参考：
 
-[http://gcblog.github.io/2016/04/16/runtime%E8%AF%A6%E8%A7%A3/#more](http://gcblog.github.io/2016/04/16/runtime%E8%AF%A6%E8%A7%A3/#more)
+http://gcblog.github.io/2016/04/16/runtime%E8%AF%A6%E8%A7%A3/#more
 
-[https://github.com/Tuccuay/RuntimeSummary](https://github.com/Tuccuay/RuntimeSummary)
+https://github.com/Tuccuay/RuntimeSummary
 
-[http://southpeak.github.io/categories/objectivec/](http://southpeak.github.io/categories/objectivec/)
+http://southpeak.github.io/categories/objectivec/
 
-https://onevcat.com/2012/04/objective-c-runtime/
+http://www.jianshu.com/p/5cbfd2855310

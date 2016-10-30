@@ -13,14 +13,14 @@
 
 - (void)setName:(NSString *)name
 {
-//    self.name = name;
-    objc_setAssociatedObject(self, "name", name, OBJC_ASSOCIATION_COPY_NONATOMIC);
+//    self.name = name; //这样不行
+    objc_setAssociatedObject(self, "name", name, OBJC_ASSOCIATION_COPY_NONATOMIC); //OK
 }
 
 - (NSString *)name
 {
-//    return self.name;
-    return objc_getAssociatedObject(self, "name");
+//    return self.name; //这样不行
+    return objc_getAssociatedObject(self, "name"); //OK
 }
 
 @end

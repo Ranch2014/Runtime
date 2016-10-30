@@ -10,6 +10,6 @@
 
 @interface NSObject (Name)
 
-@property NSString *name;
+@property NSString *name; //给系统类添加的属性
 
 @end
